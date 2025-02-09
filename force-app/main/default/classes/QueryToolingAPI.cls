@@ -4,7 +4,8 @@ public with sharing class QueryToolingAPI {
                                                 .replace('{', '(\'')
                                                 .replace('}', '\')')
                                                 .replace(',', '\',\'')
-                                                .replace(' ', '+');
+                                                .replace(' ', '');
+        System.debug('fieldsCommaSeparated: ' + fieldsCommaSeparated);
         HttpRequest req = new HttpRequest();
         Http http = new Http();
         String url = URL.getOrgDomainUrl().toExternalForm();
