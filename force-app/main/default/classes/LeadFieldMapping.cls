@@ -8,6 +8,10 @@ public with sharing class LeadFieldMapping {
         List<Object> records = QueryToolingAPI.retrieveMetadata(fields);
         system.debug('Records: ' + records.size());
         //see here: https://hicglobalsolutions.com/blog/how-to-harness-the-power-of-salesforce-tooling-api/
+        Map<String, Object> record = (Map<String, Object>) records.get(0);
+        System.debug('record: ' + record.get('Label'));
+        System.debug('record: ' + record.get('DeveloperName'));
+
     }
 
     private static List<FieldDefinition> getFieldInfo(Set<String> fieldIds) {
