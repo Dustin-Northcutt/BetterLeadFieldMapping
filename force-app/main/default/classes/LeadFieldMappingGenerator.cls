@@ -1,11 +1,23 @@
 public with sharing class LeadFieldMappingGenerator {
-    public static List<LeadFieldMapping> getLeadFieldMappings() {
+
+    public LeadFieldMappingGenerator() {
+        this.queryLeadMappingCMDT = new QueryLeadMappingCMDT();
+    }
+
+    @TestVisible
+    private LeadFieldMappingGenerator(QueryLeadMappingCMDT queryCMDT) {
+        this.queryLeadMappingCMDT = queryCMDT;
+    }
+
+    private QueryLeadMappingCMDT queryLeadMappingCMDT;
+
+    public List<LeadFieldMapping> getLeadFieldMappings() {
         List<LeadFieldMapping> leadFieldMappings = new List<LeadFieldMapping>();
         // Better_Lead_Field_Mapping__mdt mdtMap = Better_Lead_Field_Mapping__mdt.getAll();
         
         Map<string, LeadFieldMapping> fieldIdMappingsMap = new Map<string, LeadFieldMapping>();
         Set<string> fieldIds = new Set<string>();
-        for (Better_Lead_Field_Mapping__mdt mdt : Better_Lead_Field_Mapping__mdt.getAll().values()) {
+        for (Better_Lead_Field_Mapping__mdt mdt : this.queryLeadMappingCMDT.fetchMetadata()) {
             LeadFieldMapping leadFieldMapping = new LeadFieldMapping();
             leadFieldMapping.objectName = mdt.Object__c;
             if (mdt.Overwrite_Behavior__c == 'Overwrite Existing Value') {
@@ -18,9 +30,9 @@ public with sharing class LeadFieldMappingGenerator {
         }
 
         Map<String, FieldDefinition> fieldDefMap = new Map<string, FieldDefinition>();
-        for (FieldDefinition fieldDef : [SELECT id, QualifiedApiName, Label
-                                         FROM FieldDefinition
-                                         WHERE durableId IN :fieldIds]) {
+        for (FieldDefinition fieldDef :  [SELECT id, QualifiedApiName, Label
+                                          FROM FieldDefinition
+                                          WHERE durableId IN :fieldIds]) {
             LeadFieldMapping leadFieldMapping = fieldIdMappingsMap.get(fieldDef.durableId);
             leadFieldMapping.fieldAPIName = fieldDef.QualifiedApiName;
             leadFieldMapping.fieldLabel = fieldDef.Label;
